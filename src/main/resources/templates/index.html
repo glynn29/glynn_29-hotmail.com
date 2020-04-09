@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>Checkin App</title>
+
+</head>
+<body>
+
+Logged in user: <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b>
+<form th:action="@{/logout}" method="POST">
+    <input class="btn btn-primary" type="submit" value="Logout"/>
+</form>
+
+<div id="react"></div>
+
+<script src="built/bundle.js"></script>
+
+</body>
+</html>
