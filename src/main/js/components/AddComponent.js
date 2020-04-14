@@ -8,11 +8,16 @@ class AddComponent extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             username : '',
-            password : 'password',
-            enabled: false,
-            message: null,
-        }
+            password : '',
+            enabled: '',
+            user_info_id: '',
+            weeklyHours: '',
+            completedHours: '',
+            gpa: '',
+        };
+
         this.saveUser = this.saveUser.bind(this);
         this.close = this.close.bind(this);
         this.open = this.open.bind(this);
@@ -21,13 +26,17 @@ class AddComponent extends React.Component{
     saveUser = (e) => {
         e.preventDefault();
         let user = {username: this.state.username, password: this.state.password, enabled: this.state.enabled};
+        let info = {user_info_id: this.state.user_info_id, weeklyHours: this.state.weeklyHours,  completedHours: this.state.completedHours, gpa: this.state.gpa};
         ApiService.addUser(user)
+            .then(() => ApiService.getUserID(user.username))
+            .then(res => {this.setState({user_info_id : res.data})})
+            .then(() => ApiService.addInfo(this.state.user_info_id, info))
             .then(()=> ApiService.getUsers())
             .then(res => {
                 this.props.reloadUserList(res.data);
                 this.close();
             });
-    }
+    };
 
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -41,7 +50,10 @@ class AddComponent extends React.Component{
             showModal: true,
             username: '',
             password: 'password',
-            enabled: false,});
+            enabled: true,
+            gpa: 3.0,
+            completeHours: '01:00',
+            weeklyHours: '02:00',});
     }
 
     render() {
@@ -54,7 +66,7 @@ class AddComponent extends React.Component{
                     <Form>
                         <Form.Group>
                             <Form.Label>Username:</Form.Label>
-                            <Form.Control type="text" name="username" value={this.state.username} onChange={this.onChange} required/>
+                            <Form.Control type="text" name="username" placeholder="username" value={this.state.username} onChange={this.onChange} required/>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Password:</Form.Label>
@@ -62,8 +74,20 @@ class AddComponent extends React.Component{
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Enabled:</Form.Label>
-                            <Form.Control type="text" name="enabled" value={this.state.enabled} onChange={this.onChange} required />
+                            <Form.Control as="select" type="select" name="enabled" value={this.state.enabled} onChange={this.onChange} required >
+                                <option>true</option>
+                                <option>false</option>
+                            </Form.Control>
                         </Form.Group>
+                        <Form.Group>
+                            <Form.Label>GPA</Form.Label>
+                            <Form.Control type="text" name="gpa" value={this.state.gpa} onChange={this.onChange} required />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Weekly Hours(in hours)</Form.Label>
+                            <Form.Control type="time"  min='00:00' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
+                        </Form.Group>
+
 
                         <Button variant="primary" onClick={this.saveUser}>Save</Button>
                         <Button variant="dark" onClick={this.close}>Cancel</Button>

@@ -10,9 +10,13 @@ class EditComponent extends React.Component{
         this.state = {
             id: '',
             username : '',
-            password : '',
-            enabled: false,
-        }
+            password: '',
+            enabled: '',
+            user_info_id: '',
+            weeklyHours: '',
+            completedHours: '',
+            gpa: '',
+        };
         this.saveUser = this.saveUser.bind(this);
         this.loadUser = this.loadUser.bind(this);
         this.close = this.close.bind(this);
@@ -29,19 +33,32 @@ class EditComponent extends React.Component{
                     password: user.password,
                     enabled: user.enabled,
                 })
+            }).then(()=> ApiService.getInfo(this.state.id))
+            .then((res) => {
+                let info = res.data;
+                this.setState({
+                    user_info_id: this.state.id,
+                    gpa: info.gpa,
+                    weeklyHours: info.weeklyHours,
+                    completedHours: info.completedHours,
+                })
             })
     }
 
     saveUser = (e) => {
         e.preventDefault();
+
         let user = {id: this.state.id, username: this.state.username, password: this.state.password, enabled: this.state.enabled};
+        let info = {user_info_id: this.state.user_info_id, weeklyHours: this.state.weeklyHours,  completedHours: this.state.completedHours,gpa: this.state.gpa};
+
         ApiService.editUser(user)
+            .then(()=> ApiService.editInfo(info))
             .then(()=> ApiService.getUsers())
             .then(res => {
                 this.props.reloadUserList(res.data);
                 this.close();
             });
-    }
+    };
 
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -69,14 +86,21 @@ class EditComponent extends React.Component{
                             <Form.Control type="text" name="username" value={this.state.username} onChange={this.onChange} required/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Password:</Form.Label>
-                            <Form.Control type="text" name="password" value={this.state.password} onChange={this.onChange} required/>
-                        </Form.Group>
-                        <Form.Group>
                             <Form.Label>Enabled:</Form.Label>
                             <Form.Control type="text" name="enabled" value={this.state.enabled} onChange={this.onChange} required/>
                         </Form.Group>
-
+                        <Form.Group>
+                            <Form.Label>GPA</Form.Label>
+                            <Form.Control type="text" name="gpa" value={this.state.gpa} onChange={this.onChange} required />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Weekly Hours(in hours)</Form.Label>
+                            <Form.Control type="time"  min='00:00' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Completed Hours</Form.Label>
+                            <Form.Control type="time"  min='00:00' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
+                        </Form.Group>
                         <Button variant="primary"  onClick={this.saveUser}>Save</Button>
                         <Button variant="dark" onClick={this.close}>Cancel</Button>
                     </Form>

@@ -7,11 +7,11 @@ const React = require('react');
 
 class ViewComponent extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             users: [],
             message: null,
-        }
+        };
         this.deleteUser = this.deleteUser.bind(this);
         this.editUser = this.editUser.bind(this);
         this.addUser = this.addUser.bind(this);
@@ -33,7 +33,8 @@ class ViewComponent extends React.Component{
     }
 
     deleteUser(userId) {
-        ApiService.deleteUser(userId)
+        ApiService.deleteInfo(userId)
+            //.then(()=>ApiService.deleteUser(userId))
             .then(res => {
                 this.setState({message : 'User deleted successfully.'});
                 this.setState({users: this.state.users.filter(user => user.id !== userId)});
@@ -66,6 +67,8 @@ class ViewComponent extends React.Component{
                             <th>Id</th>
                             <th>User Name</th>
                             <th>Enabled</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,11 +77,12 @@ class ViewComponent extends React.Component{
                             user => <tr key={user.id}>
                                 <td>{user.id}</td>
                                 <td>{user.username}</td>
-                                <td>{user.enabled}</td>
+                                <td>{user.enabled.toString()}</td>
                                 <td>
-                                    <Button variant="dark" onClick={() => this.deleteUser(user.id)}> Delete</Button>
-                                    {' '}
-                                    <Button variant="primary" onClick={() => this.editUser(user.id)}> Edit</Button>
+                                    <Button variant="info" onClick={() => this.editUser(user.id)}> Edit</Button>
+                                </td>
+                                <td>
+                                    <Button variant="success" onClick={() => this.deleteUser(user.id)}> Delete</Button>
                                 </td>
                             </tr>
                         )
