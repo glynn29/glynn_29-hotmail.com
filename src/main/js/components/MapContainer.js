@@ -2,6 +2,7 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Circle } from "react-google-maps"
 import {compose, withProps} from "recompose";
+import {CheckinTimer} from "./CheckinTimer"
 const key = "AIzaSyBGH_z4B2pavP0quhO8uYvG6G4hLrWHBqQ";
 const mapStyles = {
     width: '50%',
@@ -14,12 +15,10 @@ export class MapContainer extends React.Component{
         this.state ={
             currentLatLng: {lat: '38.755843', lng: '-93.737337'},
             checkinArray: [],
-            elapsedTime: 0,
-            time:'',
         };
-        this.map = React.createRef();
         this.libCircle = React.createRef();
         this.testCircle = React.createRef();
+        this.timer = React.createRef();
     };
 
     componentDidMount() {
@@ -78,34 +77,12 @@ export class MapContainer extends React.Component{
         inside = bounds.contains(this.state.currentLatLng);
         if(inside) {
             console.log(inside);
-            this.startCounting();
+            this.timer.current.startCounting();
         }
     }
 
-    getSeconds(){
-        return('0' + this.state.elapsedTime % 60).slice(-2);
-    }
-    getMinutes(){
-        return(
-            Math.floor(this.state.elapsedTime / 60)
-        );
-    }
-    getHours(){
-        return(
-            Math.floor(this.state.elapsedTime / 3600)
-        );
-    }
-
-    startCounting() {
-        var _this = this;
-        this.timer = setInterval(()=> {
-            _this.setState({elapsedTime:(_this.state.elapsedTime + 1)})
-        },1000)
-    }
-
     checkout(){
-        console.log("Checked Out");
-        clearInterval(this.timer);
+        this.timer.current.checkout();
     }
 
     render() {
@@ -132,14 +109,11 @@ export class MapContainer extends React.Component{
 
         return (
         <div>
-            <div>
-                <h3>Time Studied:
-                <h4>{this.getHours()}:{this.getMinutes()}:{this.getSeconds()}</h4></h3>
-            </div>
+            <CheckinTimer ref={this.timer}/>
             <Button onClick={() => this.checkin()}>Checkin </Button>
             <Button onClick={() => this.checkout()}>CheckOut</Button>
             <div>
-                <InnerMapInstance ref={this.map} currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray}/>
+                <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray}/>
             </div>
         </div>
 
