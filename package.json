@@ -24,7 +24,8 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-google-maps": "^9.4.5",
-    "rest": "^1.3.1"
+    "rest": "^1.3.1",
+    "recompose": "latest"
   },
   "scripts": {
     "watch": "webpack --watch -d"
