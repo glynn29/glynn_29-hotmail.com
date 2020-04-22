@@ -18,11 +18,18 @@ public class User {
     @Column(nullable = false)
     @NotEmpty
     private String password;
+
     private boolean enabled;
+
+    private Integer proctorId;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Set<Role> roles;
+
+
+
+
 
     public User(){}
 
@@ -36,6 +43,14 @@ public class User {
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
+    }
+
+    public Integer getProctorId() {
+        return proctorId;
+    }
+
+    public void setProctorId(Integer proctorId) {
+        this.proctorId = proctorId;
     }
 
     public Set<Role> getRoles() {

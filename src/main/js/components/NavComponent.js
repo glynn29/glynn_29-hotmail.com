@@ -18,10 +18,10 @@ class NavComponent extends React.Component {
                  <Nav.Link as={Link} to="/checkin">Check In</Nav.Link>
                  <Nav.Link as={Link} to="/list">Edit Users</Nav.Link>
                  <Nav.Link as={Link} to="/">Home</Nav.Link>
-                 <Form inline>
-                     <Button type="submit">Logout</Button>
-                 </Form>
              </Nav>
+             <Form action="/logout" method="get" className="align-right">
+                 <Button className="align-right" type="submit">Logout</Button>
+             </Form>
          </Navbar>
      );
     }

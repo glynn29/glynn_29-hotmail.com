@@ -16,6 +16,7 @@ class AddComponent extends React.Component{
             weeklyHours: '',
             completedHours: '',
             gpa: '',
+            LoggedInId:'',
         };
 
         this.saveUser = this.saveUser.bind(this);
@@ -25,13 +26,22 @@ class AddComponent extends React.Component{
 
     saveUser = (e) => {
         e.preventDefault();
-        let user = {username: this.state.username, password: this.state.password, enabled: this.state.enabled};
-        let info = {user_info_id: this.state.user_info_id, weeklyHours: this.state.weeklyHours,  completedHours: this.state.completedHours, gpa: this.state.gpa};
+        console.log(this.state.LoggedInId);
+        let user = {username: this.state.username, password: this.state.password, enabled: this.state.enabled, proctorId: this.state.LoggedInId};
+        let info = {user_info_id: this.state.user_info_id, weeklyHours: (this.state.weeklyHours * 60),  completedHours: this.state.completedHours, gpa: this.state.gpa};
         ApiService.addUser(user)
             .then(() => ApiService.getUserID(user.username))
             .then(res => {this.setState({user_info_id : res.data})})
             .then(() => ApiService.addInfo(this.state.user_info_id, info))
-            .then(()=> ApiService.getUsers())
+            .then(()=>{
+                const id = window.localStorage.getItem("LoggedInId");
+                console.log("id is: " + id);
+                if(id ==1){//if admin
+                    return ApiService.getUsers();
+                }else{//if regular proctor
+                    return ApiService.getUserByProctorId(id);
+                }
+            })
             .then(res => {
                 this.props.reloadUserList(res.data);
                 this.close();
@@ -45,15 +55,18 @@ class AddComponent extends React.Component{
         this.setState({ showModal: false });
     }
 
-    open() {
+    open(procId) {
+        console.log("id is on open: " + procId);
         this.setState({
             showModal: true,
             username: '',
             password: 'password',
             enabled: true,
             gpa: 3.0,
-            completeHours: '01:00',
-            weeklyHours: '02:00',});
+            completeHours: 0,
+            weeklyHours: 2,
+            LoggedInId: procId,
+        });
     }
 
     render() {
@@ -85,7 +98,7 @@ class AddComponent extends React.Component{
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Weekly Hours(in hours)</Form.Label>
-                            <Form.Control type="time"  min='00:00' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
+                            <Form.Control type="number"  min='0' max='24' step='.5' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
                         </Form.Group>
 
 

@@ -1,11 +1,12 @@
 import React from "react";
+import ApiService from "../services/ApiService";
 
 export class CheckinTimer extends React.Component{
     constructor(props) {
         super(props);
         this.state ={
             elapsedTime: 0,
-            time:'',
+            LoggedInId: '',
         };
         this.startCounting = this.startCounting.bind(this);
         this.checkout = this.checkout.bind(this);
@@ -25,7 +26,10 @@ export class CheckinTimer extends React.Component{
         );
     }
 
-    startCounting() {
+    startCounting(LoggedInId) {
+        this.setState({LoggedInId: LoggedInId});
+        console.log(this.state.LoggedInId);
+
         var _this = this;
         this.timer = setInterval(()=> {
             _this.setState({elapsedTime:(_this.state.elapsedTime + 1)})
@@ -33,9 +37,13 @@ export class CheckinTimer extends React.Component{
     }
 
     checkout(){
-        console.log("Checked Out");
-        clearInterval(this.timer);
-        this.setState({elapsedTime:0})
+        console.log(this.state.LoggedInId);
+        ApiService.updateTime(this.state.LoggedInId,this.getSeconds())
+            .then(()=>{
+                console.log("Checked Out");
+                clearInterval(this.timer);
+                this.setState({elapsedTime:0})
+        });
     }
 
     render() {

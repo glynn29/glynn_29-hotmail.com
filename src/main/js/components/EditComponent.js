@@ -39,7 +39,7 @@ class EditComponent extends React.Component{
                 this.setState({
                     user_info_id: this.state.id,
                     gpa: info.gpa,
-                    weeklyHours: info.weeklyHours,
+                    weeklyHours: (info.weeklyHours / 60),
                     completedHours: info.completedHours,
                 })
             })
@@ -49,11 +49,18 @@ class EditComponent extends React.Component{
         e.preventDefault();
 
         let user = {id: this.state.id, username: this.state.username, password: this.state.password, enabled: this.state.enabled};
-        let info = {user_info_id: this.state.user_info_id, weeklyHours: this.state.weeklyHours,  completedHours: this.state.completedHours,gpa: this.state.gpa};
+        let info = {user_info_id: this.state.user_info_id, weeklyHours: (this.state.weeklyHours * 60),  completedHours: this.state.completedHours,gpa: this.state.gpa};
 
         ApiService.editUser(user)
             .then(()=> ApiService.editInfo(info))
-            .then(()=> ApiService.getUsers())
+            .then(()=>{
+                const id = window.localStorage.getItem("proctorId");
+                if(id == 1){//if admin
+                    return ApiService.getUsers();
+                }else{//if regular proctor
+                    return ApiService.getUserByProctorId(id);
+                }
+            })
             .then(res => {
                 this.props.reloadUserList(res.data);
                 this.close();
@@ -62,6 +69,9 @@ class EditComponent extends React.Component{
 
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
+
+    onTimeChange = (e) =>
+        this.setState({ [e.target.name]: (e.target.value *60) });
 
     close() {
         this.setState({ showModal: false });
@@ -94,12 +104,12 @@ class EditComponent extends React.Component{
                             <Form.Control type="text" name="gpa" value={this.state.gpa} onChange={this.onChange} required />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Weekly Hours(in hours)</Form.Label>
-                            <Form.Control type="time"  min='00:00' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
+                            <Form.Label>Weekly Hours</Form.Label>
+                            <Form.Control type="number"  min='0' max='24' step='.5' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onTimeChange} required />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Completed Hours</Form.Label>
-                            <Form.Control type="time"  min='00:00' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
+                            <Form.Label>Completed Time(in minutes)</Form.Label>
+                            <Form.Control type="number"  min='0' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
                         </Form.Group>
                         <Button variant="primary"  onClick={this.saveUser}>Save</Button>
                         <Button variant="dark" onClick={this.close}>Cancel</Button>

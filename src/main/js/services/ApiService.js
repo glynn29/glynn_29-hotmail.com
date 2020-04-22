@@ -11,12 +11,20 @@ class ApiService {
         return instance.get(USER_API_BASE_URL);
     }
 
+    getLoggedInId(){
+        return instance.get(USER_API_BASE_URL + '/getId');
+    }
+
     getUserID(username){
         return instance.get(USER_API_BASE_URL + '/user/' + username);
     }
 
     getUserById(userId){
         return instance.get(USER_API_BASE_URL + '/' + userId);
+    }
+
+    getUserByProctorId(proctorId){
+        return instance.get(USER_API_BASE_URL + '/proctor/' + proctorId);
     }
 
     addUser(user){
@@ -45,6 +53,10 @@ class ApiService {
 
     deleteInfo(infoId){
         return instance.delete(USER_API_BASE_URL + '/info/' + infoId);
+    }
+
+    updateTime(userId, time){
+        return instance.put(USER_API_BASE_URL + '/info/' + userId + '/' + time);
     }
 }
 

@@ -2,7 +2,9 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Circle } from "react-google-maps"
 import {compose, withProps} from "recompose";
-import {CheckinTimer} from "./CheckinTimer"
+import {CheckinTimer} from "./CheckinTimer";
+import ApiService from "../services/ApiService";
+
 const key = "AIzaSyBGH_z4B2pavP0quhO8uYvG6G4hLrWHBqQ";
 const mapStyles = {
     width: '50%',
@@ -15,6 +17,7 @@ export class MapContainer extends React.Component{
         this.state ={
             currentLatLng: {lat: '38.755843', lng: '-93.737337'},
             checkinArray: [],
+            LoggedInId: '',
         };
         this.libCircle = React.createRef();
         this.testCircle = React.createRef();
@@ -22,6 +25,11 @@ export class MapContainer extends React.Component{
     };
 
     componentDidMount() {
+        ApiService.getLoggedInId().
+        then(res =>{
+            const id = res.data;
+            this.setState({LoggedInId: id});
+        });
         this.showCurrentLocation();
     }
 
@@ -77,7 +85,7 @@ export class MapContainer extends React.Component{
         inside = bounds.contains(this.state.currentLatLng);
         if(inside) {
             console.log(inside);
-            this.timer.current.startCounting();
+            this.timer.current.startCounting(this.state.LoggedInId);
         }
     }
 
@@ -109,11 +117,11 @@ export class MapContainer extends React.Component{
 
         return (
         <div>
-            <CheckinTimer ref={this.timer}/>
+            <CheckinTimer ref={this.timer} />
             <Button onClick={() => this.checkin()}>Checkin </Button>
             <Button onClick={() => this.checkout()}>CheckOut</Button>
             <div>
-                <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray}/>
+                <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray} />
             </div>
         </div>
 

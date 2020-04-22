@@ -57,8 +57,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/").hasAnyRole("USER","PROCTOR","ADMIN")
                 .antMatchers("/index").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/checkin").hasAnyRole("USER","PROCTOR","ADMIN")
-                .anyRequest().authenticated().and().formLogin()
-                .permitAll().and().logout().permitAll();
+                .anyRequest().authenticated().and().formLogin().loginPage("/login")
+                .permitAll().and()
+                .logout()
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID").permitAll();
 
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }

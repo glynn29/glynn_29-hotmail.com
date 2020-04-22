@@ -18,17 +18,11 @@ public class Info {
     @JoinColumn(name = "user_info_id", referencedColumnName = "id")
     private User user;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-    //@JsonFormat(pattern = "hh:mm:ss")
-    @JsonFormat(pattern = "HH:mm")
     @Column(nullable = false)
     @NotNull
-    LocalTime weeklyHours;
+    Integer weeklyHours;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-    @JsonFormat(pattern = "HH:mm")
-    //@JsonFormat(pattern = "hh:mm:ss")
-    LocalTime completedHours;
+    Integer completedHours;
 
     @Column(nullable = false,  precision = 2, scale = 2)
     @NotNull
@@ -53,19 +47,19 @@ public class Info {
         this.user = user;
     }
 
-    public LocalTime getWeeklyHours() {
+    public Integer getWeeklyHours() {
         return weeklyHours;
     }
 
-    public void setWeeklyHours(LocalTime weeklyHours) {
+    public void setWeeklyHours(Integer weeklyHours) {
         this.weeklyHours = weeklyHours;
     }
 
-    public LocalTime getCompletedHours() {
+    public Integer getCompletedHours() {
         return completedHours;
     }
 
-    public void setCompletedHours(LocalTime completedHours) {
+    public void setCompletedHours(Integer completedHours) {
         this.completedHours = completedHours;
     }
 

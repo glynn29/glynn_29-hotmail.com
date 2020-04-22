@@ -1,43 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<head lang="en">
-    <meta charset="UTF-8"/>
-    <title>Checkin App</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/main.css" />
-</head>
-<body>
+    <head lang="en">
+        <meta charset="UTF-8"/>
+        <title>Checkin App</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha384-qdQEsAI45WFCO5QwXBelBe1rR9Nwiss4rGEqiszC+9olH1ScrLrMQr1KmDR964uZ" crossorigin="anonymous">
+<!--        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">-->
+        <link rel="stylesheet" href="/css/main.css" />
+    </head>
+    <body>
+        <div id="react"></div>
 
-
-<!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary">-->
-<!--    <a class="navbar-brand" >Logged in user: <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b></a>-->
-<!--    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--        <span class="navbar-toggler-icon"></span>-->
-<!--    </button>-->
-
-<!--    <div class="collapse navbar-collapse" id="navbarColor01">-->
-<!--        <ul class="navbar-nav mr-auto">-->
-<!--            <li class="nav-item active">-->
-<!--                <a class="nav-link" href="/checkin">Check In <span class="sr-only">(current)</span></a>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--                <form th:action="@{/logout}" method="POST">-->
-<!--                    <input class="btn btn-primary" type="submit" value="Logout"/>-->
-<!--                </form>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </div>-->
-<!--</nav>-->
-
-<div id="react"></div>
-
-<script src="built/bundle.js"></script>
-
-</body>
+        <script src="built/bundle.js"></script>
+    </body>
 </html>
-<!--<u><h2 style="color: red;">-->
-<!--    <a onclick="document.forms['logoutForm'].submit()">Logout</a>-->
-<!--</h2></u>-->
-
-<!--<form id="logoutForm" method="POST" action="/logout">-->
-<!--</form>-->

@@ -11,6 +11,7 @@ class ViewComponent extends React.Component{
         this.state = {
             users: [],
             message: null,
+            LoggedInId:'',
         };
         this.deleteUser = this.deleteUser.bind(this);
         this.editUser = this.editUser.bind(this);
@@ -21,11 +22,27 @@ class ViewComponent extends React.Component{
     }
 
     componentDidMount() {
-        ApiService.getUsers()
+        ApiService.getLoggedInId().
+        then(res =>{
+            const id = res.data;
+            console.log("id found: " + id);
+            this.setState({LoggedInId: id});
+            window.localStorage.setItem("LoggedInId", id);
+        })
+        .then(()=>{
+            const id = this.state.LoggedInId;
+            if(id ==1){//if admin
+               return ApiService.getUsers();
+            }else{//if regular proctor
+               return ApiService.getUserByProctorId(id);
+            }
+        })
             .then(res => {
                 const users = res.data;
                 this.setState({users: users});
+                console.log("got users");
             })
+
     }
 
     reloadUserList(users) {
@@ -44,12 +61,14 @@ class ViewComponent extends React.Component{
 
     editUser(userId) {
         window.localStorage.setItem("userId", userId);
+
         this.editComponent.current.open();
     }
 
     addUser() {
         window.localStorage.removeItem("userId");
-        this.addComponent.current.open();
+        const id = window.localStorage.getItem("LoggedInId");
+        this.addComponent.current.open(id);
     }
 
 
