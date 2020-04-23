@@ -12,6 +12,8 @@ class ViewComponent extends React.Component{
             users: [],
             message: null,
             LoggedInId:'',
+            role:'',
+            isAdmin: false,
         };
         this.deleteUser = this.deleteUser.bind(this);
         this.editUser = this.editUser.bind(this);
@@ -31,16 +33,20 @@ class ViewComponent extends React.Component{
         })
         .then(()=>{
             const id = this.state.LoggedInId;
-            if(id ==1){//if admin
-               return ApiService.getUsers();
+
+            const role = window.localStorage.getItem("role");
+            console.log(role);
+            if(role == "ROLE_ADMIN"){//if admin
+                this.setState({isAdmin:true});
+                return ApiService.getUsers();
             }else{//if regular proctor
-               return ApiService.getUserByProctorId(id);
+                return ApiService.getUserByProctorId(id);
             }
         })
             .then(res => {
                 const users = res.data;
                 this.setState({users: users});
-                console.log("got users");
+                console.log("got users, is admin?: " + this.state.isAdmin);
             })
 
     }
@@ -74,12 +80,14 @@ class ViewComponent extends React.Component{
 
 
     render() {
+        const isAdmin = this.state.isAdmin;
         return (
             <div>
+                <h1 >Proctor Dashboard</h1>
                 <h1>Users List</h1>
                 <Button onClick={() => this.addUser()}>Add User</Button>
-                <AddComponent reloadUserList={this.reloadUserList} ref={this.addComponent}/>
-                <EditComponent reloadUserList={this.reloadUserList} ref={this.editComponent}/>
+                <AddComponent reloadUserList={this.reloadUserList} ref={this.addComponent} isAdmin={isAdmin}/>
+                <EditComponent reloadUserList={this.reloadUserList} ref={this.editComponent} isAdmin={isAdmin}/>
                 <Table striped bordered hover>
                     <thead>
                         <tr>

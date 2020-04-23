@@ -94,7 +94,6 @@ export class MapContainer extends React.Component{
     }
 
     render() {
-        const libCoords = { lat: 38.755843, lng: -93.737337 };
         const InnerMapInstance = compose(
             withProps({
                 googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBGH_z4B2pavP0quhO8uYvG6G4hLrWHBqQ",

@@ -11,6 +11,10 @@ class ApiService {
         return instance.get(USER_API_BASE_URL);
     }
 
+    getLoggedInRole(){
+        return instance.get(USER_API_BASE_URL + '/getRole');
+    }
+
     getLoggedInId(){
         return instance.get(USER_API_BASE_URL + '/getId');
     }

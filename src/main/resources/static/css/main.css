@@ -1,3 +1,15 @@
 .container{
     width: 80%;
 }
+
+.logoutForm{
+    justify-content: right;
+}
+
+h1{
+    text-align: center;
+}
+
+h2{
+    text-align: center;
+}

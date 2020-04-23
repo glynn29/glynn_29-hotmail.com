@@ -56,6 +56,22 @@ public class UserController {
         return id;
     }
 
+    @GetMapping("/getRole")
+    public Set<Role> currentUserRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Set<Role> role= new HashSet<>();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String name = authentication.getName();
+            User user = userRepository.findByUsername(name);
+            role = user.getRoles();
+            System.out.println("User: " + name + "s Roles are " + role);
+        }
+        else {
+            System.out.println("Error - No One Logged In");
+        }
+        return role;
+    }
+
     @GetMapping
     public List<User> listUsers(){
         return userRepository.findAll();
@@ -87,7 +103,11 @@ public class UserController {
     public User updateUser(@PathVariable int id, @RequestBody User userUpdate){
         Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
         if (optionalUser.isPresent()) {
-            userRepository.save(userUpdate);
+            User user = optionalUser.get();
+            user.setUsername(userUpdate.getUsername());
+            user.setEnabled(userUpdate.isEnabled());
+
+            userRepository.save(user);
         }
         return userUpdate;
         //User user = userRepository.findById(id).orElseThrow(e => "asset not found");

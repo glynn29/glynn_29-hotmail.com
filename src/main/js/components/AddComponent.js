@@ -17,6 +17,7 @@ class AddComponent extends React.Component{
             completedHours: '',
             gpa: '',
             LoggedInId:'',
+            isAdmin:''
         };
 
         this.saveUser = this.saveUser.bind(this);
@@ -36,9 +37,12 @@ class AddComponent extends React.Component{
             .then(()=>{
                 const id = window.localStorage.getItem("LoggedInId");
                 console.log("id is: " + id);
-                if(id ==1){//if admin
+                console.log("isAdmin? props: " + this.props.isAdmin);
+                if(this.props.isAdmin){//if admin
+                    console.log("admin save");
                     return ApiService.getUsers();
                 }else{//if regular proctor
+                    console.log("proc save");
                     return ApiService.getUserByProctorId(id);
                 }
             })

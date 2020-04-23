@@ -1,25 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter, Router, Route, Switch} from 'react-router-dom'
 import ViewComponent from "./components/ViewComponent";
 import NavComponent from "./components/NavComponent";
 import MapContainer from "./components/MapContainer";
+import Footer from "./components/Footer";
+import Home from "./components/Home";
 const ReactDOM = require('react-dom');
 
-
-
-
 function App() {
+
     return (
             <BrowserRouter>
                 <NavComponent/>
                 <div className="container">
-                    <h1>Proctor Dashboard</h1>
                     <Switch>
-                        <Route path="/" exact component={ViewComponent} />
+                        <Route path="/" exact component={Home} />
                         <Route path="/list" component={ViewComponent} />
                         <Route path="/checkin" component={MapContainer}/>
                     </Switch>
                 </div>
+                <Footer/>
             </BrowserRouter>
     );
 }
