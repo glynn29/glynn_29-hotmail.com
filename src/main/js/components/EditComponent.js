@@ -70,9 +70,6 @@ class EditComponent extends React.Component{
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
-    onTimeChange = (e) =>
-        this.setState({ [e.target.name]: (e.target.value *60) });
-
     close() {
         this.setState({ showModal: false });
     }
@@ -105,11 +102,11 @@ class EditComponent extends React.Component{
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Weekly Hours</Form.Label>
-                            <Form.Control type="number"  min='0' max='24' step='.5' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onTimeChange} required />
+                            <Form.Control type="number"  min='0' max='24' step='.5' name="weeklyHours" value={this.state.weeklyHours} onChange={this.onChange} required />
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Completed Time(in minutes)</Form.Label>
-                            <Form.Control type="number"  min='0' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
+                            <Form.Control type="number"  min='0' max='1440' step='15' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
                         </Form.Group>
                         <Button variant="primary"  onClick={this.saveUser}>Save</Button>
                         <Button variant="dark" onClick={this.close}>Cancel</Button>
