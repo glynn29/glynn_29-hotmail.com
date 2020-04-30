@@ -4,7 +4,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
+const id = window.localStorage.getItem("proctorId");
 class EditComponent extends React.Component{
+
     constructor(props) {
         super(props);
         this.state = {
@@ -16,11 +18,19 @@ class EditComponent extends React.Component{
             weeklyHours: '',
             completedHours: '',
             gpa: '',
+            isAdmin: false,
         };
         this.saveUser = this.saveUser.bind(this);
         this.loadUser = this.loadUser.bind(this);
         this.close = this.close.bind(this);
         this.open = this.open.bind(this);
+    }
+    componentDidMount() {
+        const role = window.localStorage.getItem("role");
+        console.log(role);
+        if(role == "ROLE_ADMIN"){//if admin
+            this.setState({isAdmin:true});
+        }
     }
 
     loadUser() {
@@ -54,7 +64,7 @@ class EditComponent extends React.Component{
         ApiService.editUser(user)
             .then(()=> ApiService.editInfo(info))
             .then(()=>{
-                const id = window.localStorage.getItem("proctorId");
+
                 if(id == 1){//if admin
                     return ApiService.getUsers();
                 }else{//if regular proctor
@@ -92,9 +102,16 @@ class EditComponent extends React.Component{
                             <Form.Label>Username:</Form.Label>
                             <Form.Control type="text" name="username" value={this.state.username} onChange={this.onChange} required/>
                         </Form.Group>
+                        {this.state.isAdmin && <Form.Group>
+                            <Form.Label>Password:</Form.Label>
+                            <Form.Control type="text" name="password" value={this.state.password} onChange={this.onChange} required/>
+                        </Form.Group>}
                         <Form.Group>
                             <Form.Label>Enabled:</Form.Label>
-                            <Form.Control type="text" name="enabled" value={this.state.enabled} onChange={this.onChange} required/>
+                            <Form.Control as="select" name="enabled" value={this.state.enabled} onChange={this.onChange} required>
+                                <option value="true">true</option>
+                                <option value="false">false</option>
+                            </Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>GPA</Form.Label>

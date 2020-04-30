@@ -18,6 +18,8 @@ export class MapContainer extends React.Component{
             currentLatLng: {lat: '38.755843', lng: '-93.737337'},
             checkinArray: [],
             LoggedInId: '',
+            mapLoaded: false,
+            checkedIn: false,
         };
         this.libCircle = React.createRef();
         this.testCircle = React.createRef();
@@ -44,6 +46,7 @@ export class MapContainer extends React.Component{
                             lng: position.coords.longitude
                         },
                     }));
+                    this.setState({mapLoaded: true});
                     this.createCircles();
                 }
             );
@@ -86,11 +89,13 @@ export class MapContainer extends React.Component{
         if(inside) {
             console.log(inside);
             this.timer.current.startCounting(this.state.LoggedInId);
+            this.setState({checkedIn:true});
         }
     }
 
     checkout(){
         this.timer.current.checkout();
+        this.setState({checkedIn:false});
     }
 
     render() {
@@ -113,12 +118,15 @@ export class MapContainer extends React.Component{
                 {<Marker position={{lat: props.currentLocation.lat, lng: props.currentLocation.lng}}/>}
             </GoogleMap>
         );
-
         return (
         <div>
-            <CheckinTimer ref={this.timer} />
-            <Button onClick={() => this.checkin()}>Checkin </Button>
-            <Button onClick={() => this.checkout()}>CheckOut</Button>
+            <div id="mapButtons">
+
+                <CheckinTimer ref={this.timer} />
+                {this.state.mapLoaded && !this.state.checkedIn && <Button onClick={() => this.checkin()} disabled={!this.state.mapLoaded} >Checkin </Button>}
+                {this.state.mapLoaded && this.state.checkedIn && <Button onClick={() => this.checkout()} disabled={!this.state.mapLoaded} >CheckOut </Button>}
+
+            </div>
             <div>
                 <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray} />
             </div>

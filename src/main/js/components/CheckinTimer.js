@@ -49,7 +49,7 @@ export class CheckinTimer extends React.Component{
     render() {
         return (
             <div>
-                <h3>Time Studied:<h4>{this.getHours()}:{this.getMinutes()}:{this.getSeconds()}</h4></h3>
+                <h3>Time Studied:<h3>{this.getHours()}:{this.getMinutes()}:{this.getSeconds()}</h3></h3>
             </div>
         );
     }

@@ -47,8 +47,7 @@ class ViewComponent extends React.Component{
                 const users = res.data;
                 this.setState({users: users});
                 console.log("got users, is admin?: " + this.state.isAdmin);
-            })
-
+            });
     }
 
     reloadUserList(users) {
@@ -56,13 +55,11 @@ class ViewComponent extends React.Component{
     }
 
     deleteUser(userId) {
-        ApiService.deleteInfo(userId)
-            //.then(()=>ApiService.deleteUser(userId))
+        ApiService.deleteUser(userId)
             .then(res => {
                 this.setState({message : 'User deleted successfully.'});
                 this.setState({users: this.state.users.filter(user => user.id !== userId)});
             })
-
     }
 
     editUser(userId) {
@@ -86,7 +83,7 @@ class ViewComponent extends React.Component{
                 <h1 >Proctor Dashboard</h1>
                 <h1>Users List</h1>
                 <Button onClick={() => this.addUser()}>Add User</Button>
-                <AddComponent reloadUserList={this.reloadUserList} ref={this.addComponent} isAdmin={isAdmin}/>
+                <AddComponent reloadUserList={this.reloadUserList} ref={this.addComponent} isAdmin={isAdmin} />
                 <EditComponent reloadUserList={this.reloadUserList} ref={this.editComponent} isAdmin={isAdmin}/>
                 <Table striped bordered hover>
                     <thead>

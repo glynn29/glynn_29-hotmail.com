@@ -1,21 +1,25 @@
 package ucmo.project.lib_app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ucmo.project.lib_app.models.Role;
-import ucmo.project.lib_app.models.User;
+import ucmo.project.lib_app.models.*;
 import ucmo.project.lib_app.repositories.InfoRepository;
 import ucmo.project.lib_app.repositories.UserRepository;
+import ucmo.project.lib_app.services.UserValidatorService;
 
+import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -29,16 +33,62 @@ public class UserController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostMapping
-    public User create(@RequestBody User userBody) {
-        Role role = new Role(3);
+    @Autowired
+    private UserValidatorService userValidatorService;
+
+    @PostMapping("/user")
+    public ApiError createUser2(@Valid @RequestBody Person person, BindingResult result) {
+        Role role = new Role(3);//id for role_user
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        User user = new User(userBody.getUsername(),bCryptPasswordEncoder.encode(userBody.getPassword()),userBody.isEnabled(), roles);
-        user.setProctorId(userBody.getProctorId());
-        System.out.println(userBody.getProctorId());
-        return userRepository.save(user);
+        ApiError response = new ApiError();
+        User user = person.getUser();
+        Info info = person.getInfo();
+        info.setCompletedHours(0);
+        //System.out.println(user.getOrganization().getName());
+        ArrayList<String> list = userValidatorService.validateAddUser(user,info);//new ArrayList<>();
+        if (list.size()>=1) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("bad name");
+            response.setList(list);
+            System.out.println("fail: " +  list);
+            return response;
+        }else {
+            System.out.println("Saving user : " + user.getUsername());
+            user.setRoles(roles);
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+            User savedUser = userRepository.save(user);
+            info.setUser(savedUser);
+
+            infoRepository.save(info);
+        }
+        return response;
     }
+
+//    @PostMapping
+//    public ApiError createUser(@Valid @RequestBody User userBody, BindingResult result) {
+//        Role role = new Role(3);//id for role_user
+//        Set<Role> roles = new HashSet<>();
+//        roles.add(role);
+//        ApiError response = new ApiError();
+//
+//        ArrayList<String> list = userValidatorService.validateAddUser(userBody);
+//        if (result.hasErrors()) {
+//            response.setStatus(HttpStatus.BAD_REQUEST);
+//            response.setMessage("bad name");
+//            response.setList(list);
+//            System.out.println("fail: " +  list);
+//            return response;
+//        }else {
+//            User user = new User(userBody.getUsername(),bCryptPasswordEncoder.encode(userBody.getPassword()),userBody.isEnabled(), roles);
+//            user.setProctorId(userBody.getProctorId());
+//            System.out.println("Id"+ userBody.getProctorId());
+//            System.out.println("yay");
+//            userRepository.save(user);
+//        }
+//        return response;
+//    }
 
     @GetMapping("/getId")
     public Integer currentUserId() {

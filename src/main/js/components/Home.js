@@ -53,7 +53,7 @@ class Home extends React.Component{
             <div>
                 <h2> Weekly Hours: {this.state.weeklyHours}</h2>
                 <h2> Completed Time: {this.state.completedHours}</h2>
-                <h2> Remaining Hours: {this.state.remainingHours}</h2>
+                <h2> Remaining Time: {this.state.remainingHours}</h2>
 
             </div>
 

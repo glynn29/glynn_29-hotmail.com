@@ -1,11 +1,8 @@
 package ucmo.project.lib_app.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalTime;
+
 
 @Entity
 @Table(name = "info")
@@ -14,7 +11,7 @@ public class Info {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "user_info_id", referencedColumnName = "id")
     private User user;
 

@@ -4,20 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ucmo.project.lib_app.models.Info;
+import ucmo.project.lib_app.models.Organization;
 import ucmo.project.lib_app.models.User;
 import ucmo.project.lib_app.repositories.InfoRepository;
+import ucmo.project.lib_app.repositories.OrganizationRepository;
 import ucmo.project.lib_app.repositories.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/info")
+@RequestMapping("/info")
 public class InfoController {
     @Autowired
     InfoRepository infoRepository;
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    OrganizationRepository organizationRepository;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -81,4 +87,8 @@ public class InfoController {
         }
     }
 
+    @GetMapping("/organization")
+    public List<Organization> getAllOrganizations(){
+        return organizationRepository.findAll();
+    }
 }

@@ -1,12 +1,17 @@
 import axios from 'axios';
 
 const USER_API_BASE_URL = 'http://localhost:8080/users';
-const INFO_API_BASE_URL = 'http://localhost:8080/users/info';
+const INFO_API_BASE_URL = 'http://localhost:8080/info';
 
 const CSRF_TOKEN = document.cookie.match(new RegExp(`XSRF-TOKEN=([^;]+)`))[1];
 const instance = axios.create({headers: { "X-XSRF-TOKEN": CSRF_TOKEN }});
 
 class ApiService {
+
+    addCompleteUser(person){
+        return instance.post(USER_API_BASE_URL + "/user", person);
+    }
+
     getUsers(){
         return instance.get(USER_API_BASE_URL);
     }
@@ -45,22 +50,26 @@ class ApiService {
 
     //info controls
     addInfo(userId, info){
-        return instance.post(USER_API_BASE_URL + '/info/' + userId, info);
+        return instance.post(INFO_API_BASE_URL + '/' + userId, info);
     }
 
     getInfo(userId){
-        return instance.get(USER_API_BASE_URL + '/info/' + userId);
+        return instance.get(INFO_API_BASE_URL + '/' + userId);
     }
     editInfo(info){
-        return instance.put(USER_API_BASE_URL +'/info/' + info.user_info_id, info);
+        return instance.put(INFO_API_BASE_URL +'/' + info.user_info_id, info);
     }
 
     deleteInfo(infoId){
-        return instance.delete(USER_API_BASE_URL + '/info/' + infoId);
+        return instance.delete(INFO_API_BASE_URL + '/' + infoId);
     }
 
     updateTime(userId, time){
-        return instance.put(USER_API_BASE_URL + '/info/' + userId + '/' + time);
+        return instance.put(INFO_API_BASE_URL + '/' + userId + '/' + time);
+    }
+
+    getOrganizations(){
+        return instance.get(INFO_API_BASE_URL + '/organization')
     }
 }
 

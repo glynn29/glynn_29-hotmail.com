@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Login</title>
-<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>-->
-    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha384-qdQEsAI45WFCO5QwXBelBe1rR9Nwiss4rGEqiszC+9olH1ScrLrMQr1KmDR964uZ" crossorigin="anonymous">
-<!--    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">-->
-</head>
+    <head>
+        <title>Login</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
 
-<body>
+<!--        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha384-qdQEsAI45WFCO5QwXBelBe1rR9Nwiss4rGEqiszC+9olH1ScrLrMQr1KmDR964uZ" crossorigin="anonymous">-->
+    </head>
 
-<div class="container">
+    <body>
 
-    <form th:action="@{/login}" method="POST" class="form-signin">
-        <h3 class="form-signin-heading" th:text="Welcome" align="center"></h3>
-        <br/>
+        <div class="container">
 
-        <input type="text" id="username" name="username" placeholder="User Name"
-               class="form-control"/> <br/>
-        <input type="password" th:placeholder="Password"
-               id="password" name="password" class="form-control"/> <br/>
+            <form th:action="@{/login}" method="POST" class="form-signin">
+                <h3 class="form-signin-heading" th:text="Welcome" align="center"></h3>
+                <br/>
 
-        <div align="center" th:if="${param.error}">
-            <p style="font-size: 20; color: #FF1C19;">Invalid user name or password, please verify.</p>
+                <input type="text" id="username" name="username" placeholder="User Name"
+                       class="form-control"/> <br/>
+                <input type="password" th:placeholder="Password"
+                       id="password" name="password" class="form-control"/> <br/>
+
+                <div align="center" th:if="${param.error}">
+                    <p style="font-size: 20; color: #FF1C19;">Invalid user name or password, please verify.</p>
+                </div>
+                <div align="center" th:if="${param.logout}">
+                    <p style="font-size: 20; color: #FF1C19;">You have been logged out.</p>
+                </div>
+                <button class="btn btn-md btn-primary btn-block" name="Submit" value="Login" type="Submit" th:text="Login"/>
+            </form>
+            <form th:action="@{/register}" method="GET" class="form-signin">
+                <button class="btn btn-md btn-primary btn-block" name="Register" value="Register" type="submit" th:text="Register" />
+            </form>
         </div>
-        <div align="center" th:if="${param.logout}">
-            <p style="font-size: 20; color: #FF1C19;">You have been logged out.</p>
-        </div>
-        <button class="btn btn-md btn-primary btn-block" name="Submit" value="Login" type="Submit" th:text="Login"></button>
-        <button class="btn btn-md btn-primary btn-block" name="Register" value="Register" type="button" th:text="Register"></button>
-    </form>
-</div>
-</body>
+    </body>
 </html>
