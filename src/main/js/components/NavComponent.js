@@ -20,7 +20,7 @@ class NavComponent extends React.Component {
                 this.setState({role: r.role}))
         }).then(()=>{
             if(this.state.role == "ROLE_ADMIN" || this.state.role == "ROLE_PROCTOR")
-                this.setState({isUser: true});
+                this.setState({isUser: false});
         });
     }
 
@@ -31,9 +31,10 @@ class NavComponent extends React.Component {
          <Navbar expand="xl" bg="dark" variant="dark">
              <Navbar.Brand>Check In Application</Navbar.Brand>
              <Nav>
-                 <Nav.Link as={Link} to="/checkin">Check In</Nav.Link>
-                 {this.state.isUser ?  <Nav.Link as={Link} to="/list">Edit Users</Nav.Link>: ''}
                  <Nav.Link as={Link} to="/">Home</Nav.Link>
+                 <Nav.Link as={Link} to="/checkin">Check In</Nav.Link>
+                 {!this.state.isUser &&  <Nav.Link as={Link} to="/list">Edit Users</Nav.Link>}
+                 {!this.state.isUser && <Nav.Link as={Link} to="/newUsers">New Users</Nav.Link>}
              </Nav>
              <Form className="logoutForm" inline action="/logout" method="get">
                  <Button type="submit">Logout</Button>

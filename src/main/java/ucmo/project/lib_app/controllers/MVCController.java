@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ucmo.project.lib_app.models.Organization;
+import ucmo.project.lib_app.models.Role;
 import ucmo.project.lib_app.models.User;
 import ucmo.project.lib_app.repositories.InfoRepository;
 import ucmo.project.lib_app.repositories.OrganizationRepository;
@@ -19,7 +20,9 @@ import ucmo.project.lib_app.services.UserValidatorService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -56,13 +59,16 @@ public class MVCController {
     @PostMapping("/register")
 //    public String registered(@ModelAttribute("userBody") User userBody, BindingResult result){
     public String registered(@Valid User user, BindingResult result){
+        Role role = new Role(3);//id for role_user
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
         System.out.println(user.getOrganization().getName());
         userValidatorService.validate(user,result);
         if (result.hasErrors()) {
             System.out.println(result);
             return "register";
         }
-
+        user.setRoles(roles);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         System.out.println("registering");

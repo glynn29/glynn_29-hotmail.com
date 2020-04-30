@@ -48,6 +48,10 @@ class ApiService {
         return instance.put(USER_API_BASE_URL +'/' + user.id, user);
     }
 
+    editUsersProctorId(userId, proctorId){
+        return instance.put(USER_API_BASE_URL + '/' + userId + '/' + proctorId);
+    }
+
     //info controls
     addInfo(userId, info){
         return instance.post(INFO_API_BASE_URL + '/' + userId, info);
@@ -70,6 +74,10 @@ class ApiService {
 
     getOrganizations(){
         return instance.get(INFO_API_BASE_URL + '/organization')
+    }
+
+    getNewUsers(){
+        return instance.get(USER_API_BASE_URL + '/assign');
     }
 }
 

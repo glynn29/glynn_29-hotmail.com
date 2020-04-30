@@ -120,7 +120,7 @@ export class MapContainer extends React.Component{
         );
         return (
         <div>
-            <div id="mapButtons">
+            <div id="centerButtons">
 
                 <CheckinTimer ref={this.timer} />
                 {this.state.mapLoaded && !this.state.checkedIn && <Button onClick={() => this.checkin()} disabled={!this.state.mapLoaded} >Checkin </Button>}

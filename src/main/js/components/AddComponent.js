@@ -140,7 +140,7 @@ class AddComponent extends React.Component{
 
 
                         <Button variant="primary" onClick={this.saveUser}>Save</Button>
-                        <Button variant="dark" onClick={this.close}>Cancel</Button>
+                        <Button variant="danger" onClick={this.close}>Cancel</Button>
                     </Form>
                 </Modal.Body>
             </Modal>

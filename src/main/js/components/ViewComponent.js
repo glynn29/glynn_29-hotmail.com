@@ -85,7 +85,7 @@ class ViewComponent extends React.Component{
                 <Button onClick={() => this.addUser()}>Add User</Button>
                 <AddComponent reloadUserList={this.reloadUserList} ref={this.addComponent} isAdmin={isAdmin} />
                 <EditComponent reloadUserList={this.reloadUserList} ref={this.editComponent} isAdmin={isAdmin}/>
-                <Table striped bordered hover>
+                <Table striped bordered hover variant="dark">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -106,7 +106,7 @@ class ViewComponent extends React.Component{
                                     <Button variant="info" onClick={() => this.editUser(user.id)}> Edit</Button>
                                 </td>
                                 <td>
-                                    <Button variant="success" onClick={() => this.deleteUser(user.id)}> Delete</Button>
+                                    <Button variant="danger" onClick={() => this.deleteUser(user.id)}> Delete</Button>
                                 </td>
                             </tr>
                         )

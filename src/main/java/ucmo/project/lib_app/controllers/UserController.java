@@ -163,8 +163,25 @@ public class UserController {
         //User user = userRepository.findById(id).orElseThrow(e => "asset not found");
     }
 
+    @PutMapping("/{userId}/{proctorId}")
+    public User updateUsersProctorId(@PathVariable int userId, @PathVariable int proctorId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setProctorId(proctorId);
+            userRepository.save(user);
+        }
+        return optionalUser.get();
+        //User user = userRepository.findById(id).orElseThrow(e => "asset not found");
+    }
+
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id){
         userRepository.deleteById(id);
+    }
+
+    @GetMapping("/assign")
+    public List<User> getNewUsers(){
+        return userRepository.findAllByProctorIdIsNull();
     }
 }
