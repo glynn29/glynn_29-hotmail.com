@@ -1,23 +1,35 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import React, {useState} from 'react';
+import { BrowserRouter, Router, Route, Switch} from 'react-router-dom'
 import ViewComponent from "./components/ViewComponent";
-import AddComponent from "./components/AddComponent";
-import EditComponent from "./components/EditComponent";
+import NavComponent from "./components/NavComponent";
+import MapContainer from "./components/MapContainer";
+import NewUserComponent from "./components/NewUserComponent"
+import Footer from "./components/Footer";
+import Home from "./components/Home";
 const ReactDOM = require('react-dom');
 
-
 function App() {
+
     return (
-        <div className="container">
-            <ViewComponent />
-        </div>
+            <BrowserRouter>
+                <NavComponent/>
+                <div className="container">
+                    <Switch>
+                        <Route path="/" exact component={Home} />
+                        <Route path="/list" component={ViewComponent} />
+                        <Route path="/checkin" component={MapContainer}/>
+                        <Route path="/newUsers" component={NewUserComponent}/>
+                    </Switch>
+                </div>
+                <Footer/>
+            </BrowserRouter>
     );
 }
 
 export default App;
 
 ReactDOM.render(
-    <App />,
+        <App/>,
     document.getElementById('react')
-)
+);
 

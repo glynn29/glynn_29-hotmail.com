@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Register</title>
+        <link rel="stylesheet" href="/css/main.css" />
+        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
+    </head>
+    <body>
+    <div class="container">
+
+        <form th:action="@{/register}" method="POST" class="form-register" th:object="${user}">
+            <h3 class="form-signin-heading" th:text="Register" align="center"></h3>
+            <br/>
+
+            <input type="text" id="username" name="username" placeholder="User Name" class="form-control" th:field="*{username}"/> <br/>
+            <input type="password" id="password" name="password" class="form-control" th:field="*{password}"/> <br/>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" th:field="*{passwordConfirm}"/> <br/>
+
+            <label for="organization">Choose an organization:</label>
+            <select id="organization" name="organization">
+                <option value="1" name="LCA">Lambda Chi Alpha</option>
+                <option value="2" name="AKL">Alpha Kappa Lambda</option>
+            </select>
+
+<!--            <select id="organization" name="organization" >-->
+<!--                <option value="" name="">Select an Organization</option>&ndash;&gt;-->
+<!--                <option th:each="organization: ${organizations}" th:value="${organization.name}" th:text="${organization.name}"></option>-->
+<!--            </select>-->
+
+            <ul style="color: #FF1C19;">
+                <li th:each="err : ${#fields.errors('username')}" th:text="${err}" />
+                <li th:each="err : ${#fields.errors('password')}" th:text="${err}" />
+                <li th:each="err : ${#fields.errors('passwordConfirm')}" th:text="${err}" />
+            </ul>
+
+            <button class="btn btn-md btn-primary btn-block" name="Register" value="Register" type="submit" th:text="Register"></button>
+        </form>
+    </div>
+    </body>
+</html>
