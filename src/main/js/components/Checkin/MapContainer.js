@@ -3,7 +3,7 @@ import {Button} from "react-bootstrap";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Circle } from "react-google-maps"
 import {compose, withProps} from "recompose";
 import {CheckinTimer} from "./CheckinTimer";
-import ApiService from "../services/ApiService";
+import ApiService from "../../services/ApiService";
 
 const key = "AIzaSyBGH_z4B2pavP0quhO8uYvG6G4hLrWHBqQ";
 const mapStyles = {

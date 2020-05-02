@@ -1,5 +1,5 @@
 import React from "react";
-import ApiService from "../services/ApiService";
+import ApiService from "../../services/ApiService";
 
 export class CheckinTimer extends React.Component{
     constructor(props) {
