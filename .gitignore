@@ -30,3 +30,21 @@ build/
 
 ### VS Code ###
 .vscode/
+
+###webpack###
+/node_modules
+/test/js
+/test/browsertest/js
+/test/fixtures/temp-*
+/test/temp
+/test/ChangesAndRemovals
+/benchmark/js
+/benchmark/fixtures
+/examples/**/dist
+/coverage
+.DS_Store
+*.log
+.vscode
+.cache
+.eslintcache
+package-lock.json
