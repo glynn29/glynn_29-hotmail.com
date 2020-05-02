@@ -1,24 +1,19 @@
 package ucmo.project.lib_app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ucmo.project.lib_app.models.*;
 import ucmo.project.lib_app.repositories.InfoRepository;
 import ucmo.project.lib_app.repositories.UserRepository;
-import ucmo.project.lib_app.services.UserValidatorService;
+import ucmo.project.lib_app.services.ValidatorService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -34,19 +29,18 @@ public class UserController {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    private UserValidatorService userValidatorService;
+    ValidatorService validatorService;
 
     @PostMapping("/user")
-    public ApiError createUser2(@Valid @RequestBody Person person, BindingResult result) {
+    public ApiResponse createUser(@Valid @RequestBody Person person, BindingResult result) {
         Role role = new Role(3);//id for role_user
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        ApiError response = new ApiError();
+        ApiResponse response = new ApiResponse();
         User user = person.getUser();
         Info info = person.getInfo();
         info.setCompletedHours(0);
-        //System.out.println(user.getOrganization().getName());
-        ArrayList<String> list = userValidatorService.validateAddUser(user,info);//new ArrayList<>();
+        ArrayList<String> list = validatorService.validateAddUser(user,info);//new ArrayList<>();
         if (list.size()>=1) {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage("bad name");
@@ -66,29 +60,47 @@ public class UserController {
         return response;
     }
 
-//    @PostMapping
-//    public ApiError createUser(@Valid @RequestBody User userBody, BindingResult result) {
-//        Role role = new Role(3);//id for role_user
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(role);
-//        ApiError response = new ApiError();
-//
-//        ArrayList<String> list = userValidatorService.validateAddUser(userBody);
-//        if (result.hasErrors()) {
-//            response.setStatus(HttpStatus.BAD_REQUEST);
-//            response.setMessage("bad name");
-//            response.setList(list);
-//            System.out.println("fail: " +  list);
-//            return response;
-//        }else {
-//            User user = new User(userBody.getUsername(),bCryptPasswordEncoder.encode(userBody.getPassword()),userBody.isEnabled(), roles);
-//            user.setProctorId(userBody.getProctorId());
-//            System.out.println("Id"+ userBody.getProctorId());
-//            System.out.println("yay");
-//            userRepository.save(user);
-//        }
-//        return response;
-//    }
+    @PutMapping("/{userId}")
+    public ApiResponse editUser(@Valid @RequestBody Person person, @PathVariable Integer userId){
+        User userUpdate = person.getUser();
+        Info infoUpdate = person.getInfo();
+        ApiResponse response = new ApiResponse();
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            System.out.println("user " + user.getUsername() + " is present, editing");
+
+            user.setEnabled(userUpdate.isEnabled());
+            user.setUsername(userUpdate.getUsername());
+
+            if (userUpdate.getPassword().length() > 0){
+                System.out.println("password change");
+                user.setPassword(userUpdate.getPassword());
+            }
+
+            Info info = infoRepository.findByUser(user);
+            info.setGPA(infoUpdate.getGPA());
+            info.setCompletedHours(infoUpdate.getCompletedHours());
+            info.setWeeklyHours(infoUpdate.getWeeklyHours());
+
+            ArrayList<String> list = validatorService.validateEditUser(user,info);
+            if (list.size()>=1) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setList(list);
+                System.out.println("fail: " +  list);
+                return response;
+            }else {
+                System.out.println("Edit Success, Saving user : " + user.getUsername());
+                if (userUpdate.getPassword().length() > 0) {
+                    user.setPassword(bCryptPasswordEncoder.encode(userUpdate.getPassword()));
+                }
+                userRepository.save(user);
+                infoRepository.save(info);
+            }
+        }
+        return response;
+    }
 
     @GetMapping("/getId")
     public Integer currentUserId() {
@@ -114,7 +126,7 @@ public class UserController {
             String name = authentication.getName();
             User user = userRepository.findByUsername(name);
             role = user.getRoles();
-            System.out.println("User: " + name + "s Roles are " + role);
+            System.out.println("User: " + name + "s Roles are " + role.iterator());
         }
         else {
             System.out.println("Error - No One Logged In");
@@ -132,11 +144,17 @@ public class UserController {
         return userRepository.findByRoles(id);
     }
 
-    @GetMapping("/{id}")
-    public User findUserById(@PathVariable int id){
-//        Optional<User> optionalUser = userRepository.findById(id);
-//        return optionalUser.isPresent() ? optionalUser.get() : null;
-        return userRepository.findById(id).orElse(null);
+    @GetMapping("/{userId}")
+    public Person getUserById(@PathVariable Integer userId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Person person = new Person();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Info info = infoRepository.findByUser(user);
+            person.setUser(user);
+            person.setInfo(info);
+        }
+        return person;
     }
 
     @GetMapping("/user/{username}")
@@ -147,32 +165,6 @@ public class UserController {
             id = user.getId();
         }
         return id;
-    }
-
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody User userUpdate){
-        Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setUsername(userUpdate.getUsername());
-            user.setEnabled(userUpdate.isEnabled());
-
-            userRepository.save(user);
-        }
-        return userUpdate;
-        //User user = userRepository.findById(id).orElseThrow(e => "asset not found");
-    }
-
-    @PutMapping("/{userId}/{proctorId}")
-    public User updateUsersProctorId(@PathVariable int userId, @PathVariable int proctorId){
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setProctorId(proctorId);
-            userRepository.save(user);
-        }
-        return optionalUser.get();
-        //User user = userRepository.findById(id).orElseThrow(e => "asset not found");
     }
 
     @DeleteMapping("/{id}")

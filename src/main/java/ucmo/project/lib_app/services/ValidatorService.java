@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 
 @Service
-    public class UserValidatorService implements Validator {
+    public class ValidatorService implements Validator {
 
         @Autowired
         private UserRepository userRepository;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 
     public ArrayList<String> validateAddUser(User user, Info info) {
         System.out.println("validating: " + user.getUsername());
-        ArrayList<String> errorMap = new ArrayList<>();
+        ArrayList<String> errorMap = validateAddInfo(info);//validate info
 
         if (user.getUsername().length() < 6 || user.getUsername().length() > 32) {
             errorMap.add("Username must be between 6 and 32 characters.");
@@ -60,28 +60,44 @@ import java.util.ArrayList;
             errorMap.add("Password must be at least 6 characters");
         }
 
-        //check info
+        return errorMap;
+    }
+
+    public ArrayList<String> validateEditUser(User user, Info info) {
+        System.out.println("validating: " + user.getUsername());
+        ArrayList<String> errorMap = validateAddInfo(info);//validate info
+
+        if (user.getUsername().length() < 6 || user.getUsername().length() > 32) {
+            errorMap.add("Username must be between 6 and 32 characters.");
+        }
+        if (userRepository.findByUsernameAndIdNot(user.getUsername(), user.getId()) != null) {
+            User user1 = userRepository.findByUsernameAndIdNot(user.getUsername(), user.getId());
+            System.out.println("User " + user1.getUsername() + " with id " + user1.getId());
+            System.out.println("Same as User " + user.getUsername() + " with id " + user.getId());
+
+            errorMap.add("Someone already has that username");
+        }
+
+        if (user.getPassword().length() < 6 || user.getPassword().length() > 64) {
+            System.out.println("Validating password: " + user.getPassword().length());
+            errorMap.add("Password must be at least 6 characters");
+        }
+
+        return errorMap;
+    }
+
+    public ArrayList<String> validateAddInfo(Info info) {
+        ArrayList<String> errorMap = new ArrayList<>();
+
         if (info.getWeeklyHours() < 0 || info.getCompletedHours() < 0 || info.getGPA() < 0) {
             errorMap.add("Hours cant be negative");
         }
+
         if (info.getGPA() < 0 || info.getGPA() > 4) {
             errorMap.add("GPA should be between 0.0 - 4.0");
         }
 
         return errorMap;
     }
-
-//    public ArrayList<String> validateAddInfo(Info info) {
-//        System.out.println("validating: " + info.getUser().getUsername());
-//        ArrayList<String> errorMap = new ArrayList<>();
-//
-//        if (info.getWeeklyHours() < 0 || info.getCompletedHours() < 0 || info.getGPA() < 0) {
-//            errorMap.add("Hours cant be negative");
-//        }
-//        if (info.getGPA() < 0 || info.getGPA() > 4) {
-//            errorMap.add("GPA should be between 0.0 - 4.0");
-//        }
-//        return errorMap;
-//    }
 }
 

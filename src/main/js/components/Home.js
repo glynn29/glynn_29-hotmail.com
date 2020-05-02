@@ -4,23 +4,14 @@ class Home extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            role: '',
             LoggedInId:'',
-            weeklyHours: '',
-            completedHours: '',
-            remainingHours:''
+            weeklyHours: 0,
+            completedHours: 0,
+            remainingHours:0
         };
     }
 
     componentDidMount() {
-        ApiService.getLoggedInRole().then(res =>{
-            const role = res.data;
-            role.map(r=> {
-                this.setState({role: r.role});
-                window.localStorage.setItem("role", r.role);
-            } );
-        }).then(()=> console.log(this.state.role));
-
         ApiService.getLoggedInId().
         then(res =>{
             const id = res.data;
@@ -30,6 +21,7 @@ class Home extends React.Component{
         }).then(()=>ApiService.getInfo(this.state.LoggedInId))
         .then(res=>{
             const info = res.data;
+            console.log("info: " + info);
 
             const weeklyMinutes = info.weeklyHours;
             const completeMinutes = info.completedHours;

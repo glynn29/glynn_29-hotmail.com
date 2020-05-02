@@ -1,15 +1,37 @@
 import axios from 'axios';
 
-const USER_API_BASE_URL = 'http://localhost:8080/users';
-const INFO_API_BASE_URL = 'http://localhost:8080/info';
+const USER_API_BASE_URL = '/users';
+const PROCTOR_API_BASE_URL = '/proctor';
+const INFO_API_BASE_URL = '/info';
 
 const CSRF_TOKEN = document.cookie.match(new RegExp(`XSRF-TOKEN=([^;]+)`))[1];
 const instance = axios.create({headers: { "X-XSRF-TOKEN": CSRF_TOKEN }});
 
 class ApiService {
+    //proctor apis
+    getUserByProctorId(proctorId){
+        return instance.get(PROCTOR_API_BASE_URL + '/' + proctorId + '/users');
+    }
 
+    addProctor(person){
+        return instance.post("" +PROCTOR_API_BASE_URL, person);
+    }
+
+    getProctorById(proctorId){
+        return instance.get(PROCTOR_API_BASE_URL + '/' + proctorId);
+    }
+
+    editProctor(proctorId, person){
+        return instance.put(PROCTOR_API_BASE_URL + '/' + proctorId, person);
+    }
+
+    //users
     addCompleteUser(person){
         return instance.post(USER_API_BASE_URL + "/user", person);
+    }
+
+    editUser(proctorId, person){
+        return instance.put(USER_API_BASE_URL + '/' + proctorId, person);
     }
 
     getUsers(){
@@ -24,48 +46,21 @@ class ApiService {
         return instance.get(USER_API_BASE_URL + '/getId');
     }
 
-    getUserID(username){
-        return instance.get(USER_API_BASE_URL + '/user/' + username);
-    }
-
     getUserById(userId){
         return instance.get(USER_API_BASE_URL + '/' + userId);
-    }
-
-    getUserByProctorId(proctorId){
-        return instance.get(USER_API_BASE_URL + '/proctor/' + proctorId);
-    }
-
-    addUser(user){
-        return instance.post("" + USER_API_BASE_URL, user);
     }
 
     deleteUser(userId){
         return instance.delete(USER_API_BASE_URL + '/' + userId);
     }
 
-    editUser(user){
-        return instance.put(USER_API_BASE_URL +'/' + user.id, user);
-    }
-
-    editUsersProctorId(userId, proctorId){
-        return instance.put(USER_API_BASE_URL + '/' + userId + '/' + proctorId);
-    }
-
     //info controls
-    addInfo(userId, info){
-        return instance.post(INFO_API_BASE_URL + '/' + userId, info);
+    addInfo(userId, proctorId, info){
+        return instance.post(INFO_API_BASE_URL + '/' + userId + '/proctor/' + proctorId, info);
     }
 
     getInfo(userId){
         return instance.get(INFO_API_BASE_URL + '/' + userId);
-    }
-    editInfo(info){
-        return instance.put(INFO_API_BASE_URL +'/' + info.user_info_id, info);
-    }
-
-    deleteInfo(infoId){
-        return instance.delete(INFO_API_BASE_URL + '/' + infoId);
     }
 
     updateTime(userId, time){
@@ -74,6 +69,10 @@ class ApiService {
 
     getOrganizations(){
         return instance.get(INFO_API_BASE_URL + '/organization')
+    }
+
+    getOrganization(proctorId){
+        return instance.get(INFO_API_BASE_URL + '/organization/' + proctorId)
     }
 
     getNewUsers(){

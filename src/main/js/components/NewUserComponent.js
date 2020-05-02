@@ -9,23 +9,35 @@ class NewUserComponent extends React.Component{
         super(props);
         this.state = {
             users: [],
-        }
+        };
         this.addInfoComponent = React.createRef();
         this.reloadUserList = this.reloadUserList.bind(this);
     }
 
     componentDidMount() {
-        ApiService.getNewUsers().then(res=>{
-            this.setState({users: res.data});
-
-        }).then(()=>{
-            console.log("new users:");
-            this.state.users.map(user=>console.log(user));
-        })
+        ApiService.getLoggedInId()
+            .then(res =>{
+                const id = res.data;
+                console.log("proctor id found: " + id);
+                this.setState({proctorId: id});
+            }).then(()=> ApiService.getOrganization(this.state.proctorId))
+            .then(res =>{
+                const organization = res.data;
+                console.log("org id is: " + organization.id);
+                this.setState({organization: organization.id})
+            })
+            .then(()=>  ApiService.getNewUsers())
+            .then(res=>{
+                this.setState({users: res.data.filter(user => user.organization.id === this.state.organization)});
+            })
+           .then(()=>{
+                console.log("new users:");
+                this.state.users.map(user=>console.log(user));
+            })
     }
 
     reloadUserList(users) {
-        this.setState({users: users})
+        this.setState({users: users.filter(user => user.organization.id === this.state.organization)})
     }
 
     deleteUser(userId) {

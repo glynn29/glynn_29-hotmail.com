@@ -9,19 +9,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ucmo.project.lib_app.models.Organization;
 import ucmo.project.lib_app.models.Role;
 import ucmo.project.lib_app.models.User;
-import ucmo.project.lib_app.repositories.InfoRepository;
 import ucmo.project.lib_app.repositories.OrganizationRepository;
 import ucmo.project.lib_app.repositories.UserRepository;
-import ucmo.project.lib_app.services.UserValidatorService;
+import ucmo.project.lib_app.services.ValidatorService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -34,7 +31,7 @@ public class MVCController {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private UserValidatorService userValidatorService;
+    private ValidatorService validatorService;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -63,7 +60,7 @@ public class MVCController {
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         System.out.println(user.getOrganization().getName());
-        userValidatorService.validate(user,result);
+        validatorService.validate(user,result);
         if (result.hasErrors()) {
             System.out.println(result);
             return "register";

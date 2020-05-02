@@ -3,13 +3,13 @@ package ucmo.project.lib_app.models;
 import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 
-public class ApiError {
+public class ApiResponse {
     private HttpStatus status;
     private String message;
     private ArrayList<String> list;
 
-    public ApiError(){ }
-    public ApiError(HttpStatus status, String message, ArrayList<String> list){
+    public ApiResponse(){ }
+    public ApiResponse(HttpStatus status, String message, ArrayList<String> list){
         this.status= status;
         this.message = message;
         this.list = list;

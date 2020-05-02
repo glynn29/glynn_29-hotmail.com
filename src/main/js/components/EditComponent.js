@@ -9,71 +9,50 @@ class EditComponent extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {
-            id: '',
-            username : '',
-            password: '',
-            enabled: '',
-            user_info_id: '',
-            weeklyHours: '',
-            completedHours: '',
-            gpa: '',
-            isAdmin: false,
-        };
+        this.state = {};
         this.saveUser = this.saveUser.bind(this);
         this.loadUser = this.loadUser.bind(this);
         this.close = this.close.bind(this);
         this.open = this.open.bind(this);
     }
-    componentDidMount() {
-        const role = window.localStorage.getItem("role");
-        console.log(role);
-        if(role == "ROLE_ADMIN"){//if admin
-            this.setState({isAdmin:true});
-        }
-    }
 
     loadUser() {
-        ApiService.getUserById(window.localStorage.getItem("userId"))
-            .then((res) => {
-                let user = res.data;
+        ApiService.getUserById(this.state.userId)
+            .then(res => {
+                let person = res.data;
+                let user = person.user;
+                let info = person.info;
                 this.setState({
-                    id: user.id,
                     username: user.username,
-                    password: user.password,
+                    password: '',
                     enabled: user.enabled,
-                })
-            }).then(()=> ApiService.getInfo(this.state.id))
-            .then((res) => {
-                let info = res.data;
-                this.setState({
-                    user_info_id: this.state.id,
+
                     gpa: info.gpa,
                     weeklyHours: (info.weeklyHours / 60),
                     completedHours: info.completedHours,
-                })
+                });
             })
     }
 
     saveUser = (e) => {
         e.preventDefault();
-
-        let user = {id: this.state.id, username: this.state.username, password: this.state.password, enabled: this.state.enabled};
+        let user = {username: this.state.username, password: this.state.password, enabled: this.state.enabled};
         let info = {user_info_id: this.state.user_info_id, weeklyHours: (this.state.weeklyHours * 60),  completedHours: this.state.completedHours,gpa: this.state.gpa};
-
-        ApiService.editUser(user)
-            .then(()=> ApiService.editInfo(info))
-            .then(()=>{
-
-                if(id == 1){//if admin
-                    return ApiService.getUsers();
-                }else{//if regular proctor
-                    return ApiService.getUserByProctorId(id);
-                }
-            })
+        let person = {user:user, info:info};
+        ApiService.editUser(this.state.id, person)
             .then(res => {
-                this.props.reloadUserList(res.data);
-                this.close();
+                console.log("errors");
+                let errors = res.data.list;
+                if(errors != null){
+                    this.setState({errorMessage: errors});
+                }else {
+                    console.log("proctor save");
+                    return  ApiService.getUserByProctorId(this.state.proctorId)
+                        .then(res => {
+                            this.props.reloadUserList(res.data);
+                            this.close();
+                        });
+                }
             });
     };
 
@@ -84,15 +63,19 @@ class EditComponent extends React.Component{
         this.setState({ showModal: false });
     }
 
-    open() {
+    open(userId, proctorId) {
         this.loadUser();
         this.setState({ showModal: true});
+        this.setState({ proctorId: proctorId});
+        this.setState({ userId: userId});
     }
 
 
     render() {
         return (
             <Modal show={this.state.showModal} onHide={this.close}>
+                { this.state.errorMessage &&
+                <h3 className="error"> { this.state.errorMessage.map(message=><h4 key={message}>{message}</h4>)} </h3>}
                 <Modal.Header>
                     <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
@@ -102,10 +85,10 @@ class EditComponent extends React.Component{
                             <Form.Label>Username:</Form.Label>
                             <Form.Control type="text" name="username" value={this.state.username} onChange={this.onChange} required/>
                         </Form.Group>
-                        {this.state.isAdmin && <Form.Group>
+                        <Form.Group>
                             <Form.Label>Password:</Form.Label>
                             <Form.Control type="text" name="password" value={this.state.password} onChange={this.onChange} required/>
-                        </Form.Group>}
+                        </Form.Group>
                         <Form.Group>
                             <Form.Label>Enabled:</Form.Label>
                             <Form.Control as="select" name="enabled" value={this.state.enabled} onChange={this.onChange} required>
@@ -125,8 +108,11 @@ class EditComponent extends React.Component{
                             <Form.Label>Completed Time(in minutes)</Form.Label>
                             <Form.Control type="number"  min='0' max='1440' step='15' name="completedHours" value={this.state.completedHours} onChange={this.onChange} required />
                         </Form.Group>
-                        <Button variant="primary"  onClick={this.saveUser}>Save</Button>
-                        <Button variant="dark" onClick={this.close}>Cancel</Button>
+
+                        <div id="centerButtons">
+                            <Button variant="primary"  onClick={this.saveUser}>Save</Button>
+                            <Button variant="danger" onClick={this.close}>Cancel</Button>
+                        </div>
                     </Form>
                 </Modal.Body>
             </Modal>

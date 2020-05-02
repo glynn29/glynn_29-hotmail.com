@@ -4,7 +4,7 @@ class Footer extends React.Component {
     render() {
         return (
             <div className="fixed-bottom">
-                <Navbar expand="xl" bg="dark" variant="dark">
+                <Navbar expand="xl" bg="dark" variant="dark" fixed="bottom">
                     <Container className="justify-content-center">
                         <NavbarBrand >{"Glynn Leininger - Copyright © " + new Date().getFullYear() + "."}</NavbarBrand>
                     </Container>

@@ -17,21 +17,28 @@ class AddInfoComponent extends React.Component {
     }
 
     saveInfo(){
-
         let info= {gpa: this.state.gpa, completedHours: 0, weeklyHours: (this.state.weeklyHours*60)};
-        ApiService.addInfo(this.state.userId, info)
-            .then(()=> ApiService.getLoggedInId())
+        ApiService.getLoggedInId()
             .then(res =>{
                 const id = res.data;
-                console.log("id found: " + id);
+                console.log("Proctor id found: " + id);
                 this.setState({proctorId: id});
-            })
-            .then(()=> ApiService.editUsersProctorId(this.state.userId, this.state.proctorId))
-            .then(()=> ApiService.getNewUsers())
+            }).then(() => ApiService.addInfo(this.state.userId, this.state.proctorId, info))
             .then(res => {
-                this.props.reloadUserList(res.data);
-                this.close();
+
+                let errors = res.data.list;
+                if(errors != null){
+                    console.log("errors");
+                    this.setState({errorMessage: errors});
+                }else {
+                    ApiService.getNewUsers()
+                        .then(res => {
+                            this.props.reloadUserList(res.data);
+                            this.close();
+                        });
+                }
             });
+
     }
 
     onChange = (e) =>
@@ -39,6 +46,7 @@ class AddInfoComponent extends React.Component {
 
     close() {
         this.setState({ showModal: false });
+        this.setState({errorMessage:''});
     }
 
     open(userId) {
