@@ -4,7 +4,7 @@ import ViewComponent from "./components/ViewComponent";
 import AdminViewComponent from "./components/Admin/AdminViewComponent";
 import NavComponent from "./components/NavComponent";
 import MapContainer from "./components/Checkin/MapContainer";
-import NewUserComponent from "./components/NewUserComponent"
+import NewUserComponent from "./components/NewUserComponent";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
 import ApiService from "./services/ApiService";
