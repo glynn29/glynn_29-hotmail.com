@@ -5,10 +5,10 @@ INSERT INTO role(role) VALUES ('ROLE_USER');
 INSERT INTO organization(abbreviation, name) VALUES ('LCA', 'Lambda Chi Alpha');
 INSERT INTO organization(abbreviation, name) VALUES ('AKL', 'Alpha Kappa Lambda');
 
-INSERT INTO user(enabled, password, username, proctor_id,organization_id) VALUES (true, '$2a$10$0Gdl4wkmMSDDMjMAh9/PI.MVydfp0izSJx1tWDX3AP39xme0j1yWu','admin',1,1);
-INSERT INTO user(enabled, password, username,proctor_id,organization_id) VALUES (true, '$2a$10$gepQI61frUHCsEpXSy4w4urVyEYJUc5qRz7S4/FifF4H84paT9dFu', 'bob',1,1);
-INSERT INTO user(enabled, password, username,proctor_id,organization_id) VALUES (true, '$2a$10$Q6oOO4VHCSinAG16bbZeZe0Qh0Qrh7HEcL8OZt8bgLZdZbkyveKbi','user',2,1);
-INSERT INTO user(enabled, password, username,organization_id) VALUES (true, '$2a$10$Q6oOO4VHCSinAG16bbZeZe0Qh0Qrh7HEcL8OZt8bgLZdZbkyveKbi','newuser',1);
+INSERT INTO users(enabled, password, username, proctor_id,organization_id) VALUES (true, '$2a$10$0Gdl4wkmMSDDMjMAh9/PI.MVydfp0izSJx1tWDX3AP39xme0j1yWu','admin',1,1);
+INSERT INTO users(enabled, password, username,proctor_id,organization_id) VALUES (true, '$2a$10$gepQI61frUHCsEpXSy4w4urVyEYJUc5qRz7S4/FifF4H84paT9dFu', 'bob',1,1);
+INSERT INTO users(enabled, password, username,proctor_id,organization_id) VALUES (true, '$2a$10$Q6oOO4VHCSinAG16bbZeZe0Qh0Qrh7HEcL8OZt8bgLZdZbkyveKbi','user',2,1);
+INSERT INTO users(enabled, password, username,organization_id) VALUES (true, '$2a$10$Q6oOO4VHCSinAG16bbZeZe0Qh0Qrh7HEcL8OZt8bgLZdZbkyveKbi','newuser',1);
 
 INSERT INTO user_role(user_id, role_id) VALUES (1,1);
 INSERT INTO user_role(user_id, role_id) VALUES (2,2);
