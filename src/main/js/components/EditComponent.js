@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-const id = window.localStorage.getItem("proctorId");
+
 class EditComponent extends React.Component{
 
     constructor(props) {
@@ -39,7 +39,7 @@ class EditComponent extends React.Component{
         let user = {username: this.state.username, password: this.state.password, enabled: this.state.enabled};
         let info = {user_info_id: this.state.user_info_id, weeklyHours: (this.state.weeklyHours * 60),  completedHours: this.state.completedHours,gpa: this.state.gpa};
         let person = {user:user, info:info};
-        ApiService.editUser(this.state.id, person)
+        ApiService.editUser(this.state.userId, person)
             .then(res => {
                 console.log("errors");
                 let errors = res.data.list;
