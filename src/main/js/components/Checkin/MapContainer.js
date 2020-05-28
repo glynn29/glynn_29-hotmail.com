@@ -60,27 +60,33 @@ export class MapContainer extends React.Component{
     };
 
     checkPermissions(){
-        if (Notification.permission === "granted") {
-            //dont bother them
-            return true;
-        }
-        //ask for permission for location
-        Notification.requestPermission(function (result) {
+        // Let's check if the browser supports notifications
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }else {
+            // see if permissions are already granted
             if (Notification.permission === "granted") {
-               //permission granted
+                //dont bother them
                 return true;
             }
-            if (result === 'denied') {
-                alert("location required, refresh page to try again");
-                console.log('Permission wasn\'t granted. Allow a retry.');
-                return false;
-            } else if (result === 'default') {
-                alert("location required, refresh page to try again");
-                console.log('The permission request was dismissed.');
-                return false;
-            }
-            console.log('Permission was granted for notifications');
-        });
+            //ask for permission for location
+            Notification.requestPermission(function (result) {
+                if (Notification.permission === "granted") {
+                    //permission granted
+                    return true;
+                }
+                if (result === 'denied') {
+                    alert("location required, refresh page to try again");
+                    console.log('Permission wasn\'t granted. Allow a retry.');
+                    return false;
+                } else if (result === 'default') {
+                    alert("location required, refresh page to try again");
+                    console.log('The permission request was dismissed.');
+                    return false;
+                }
+                console.log('Permission was granted for notifications');
+            });
+        }
     }
 
     createCircles(){
