@@ -36,22 +36,52 @@ export class MapContainer extends React.Component{
     }
 
     showCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    this.setState(prevState => ({
-                        currentLatLng: {
-                            ...prevState.currentLatLng,
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        },
-                    }));
-                    this.setState({mapLoaded: true});
-                    this.createCircles();
-                }
-            );
+        const granted = this.checkPermissions();
+        if(granted){
+            if (navigator.geolocation) {
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        this.setState(prevState => ({
+                            currentLatLng: {
+                                ...prevState.currentLatLng,
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            },
+                        }));
+                        this.setState({mapLoaded: true});
+                        this.createCircles();
+                    }
+                );
+            }else{
+                console.log("Navigation disabled");
+            }
         }
     };
+
+    checkPermissions(){
+        if (Notification.permission === "granted") {
+            //dont bother them
+            return true;
+        }
+        //ask for permission for location
+        Notification.requestPermission(function (result) {
+            if (Notification.permission === "granted") {
+               //permission granted
+                return true;
+            }
+            if (result === 'denied') {
+                alert("location required, refresh page to try again");
+                console.log('Permission wasn\'t granted. Allow a retry.');
+                return false;
+            } else if (result === 'default') {
+                alert("location required, refresh page to try again");
+                console.log('The permission request was dismissed.');
+                return false;
+            }
+            console.log('Permission was granted for notifications');
+        });
+    }
 
     createCircles(){
         const libCoords = { lat: 38.755843, lng: -93.737337 };
@@ -128,7 +158,7 @@ export class MapContainer extends React.Component{
 
             </div>
             <div>
-                <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray} />
+                {this.state.mapLoaded ? <InnerMapInstance currentLocation={this.state.currentLatLng} checkinArray={this.state.checkinArray} /> : <h1>Location services disabled</h1>}
             </div>
         </div>
 
