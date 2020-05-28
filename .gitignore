@@ -3,7 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-package-lock.json
 
 ### STS ###
 .apt_generated
@@ -33,18 +32,6 @@ build/
 
 ###webpack###
 /node_modules
-/test/js
-/test/browsertest/js
-/test/fixtures/temp-*
-/test/temp
-/test/ChangesAndRemovals
-/benchmark/js
-/benchmark/fixtures
-/examples/**/dist
-/coverage
-.DS_Store
-*.log
-.vscode
-.cache
-.eslintcache
 package-lock.json
+/src/main/resources/static/built
+bundle.js

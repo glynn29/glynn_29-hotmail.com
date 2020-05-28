@@ -22,6 +22,11 @@ import java.time.format.DateTimeFormatter;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -39,11 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         };
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
@@ -58,7 +58,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/").hasAnyRole("USER","PROCTOR","ADMIN")
                 .antMatchers("/checkin").hasAnyRole("USER","PROCTOR","ADMIN")
-                .antMatchers("/register").permitAll()
                 .antMatchers("/list").hasAnyRole("PROCTOR","ADMIN")
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").defaultSuccessUrl("/",true)
