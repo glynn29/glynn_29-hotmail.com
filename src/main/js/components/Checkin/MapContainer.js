@@ -70,7 +70,7 @@ export class MapContainer extends React.Component{
                 return true;
             }
             //ask for permission for location
-            Notification.requestPermission(function (result) {
+            Notification.requestPermission().then(function (result) {
                 if (Notification.permission === "granted") {
                     //permission granted
                     return true;
